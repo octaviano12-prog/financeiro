@@ -1,0 +1,71 @@
+import { NavLink, Outlet } from 'react-router-dom';
+import { BarChart3, Bell, Building2, CalendarDays, ChevronDown, CreditCard, Flag, Gauge, Home, LogOut, Mail, Menu, Moon, Receipt, Search, Settings, Target, WalletCards } from 'lucide-react';
+import { useAuth } from '../state/AuthContext.jsx';
+
+const nav = [
+  ['/', 'Dashboard', Home],
+  ['/bancos', 'Bancos', Building2],
+  ['/cartoes', 'Cartoes', CreditCard],
+  ['/dividas', 'Dividas', Receipt],
+  ['/receitas', 'Receitas', WalletCards],
+  ['/despesas', 'Despesas', Bell],
+  ['/plano-de-acao', 'Plano', Flag],
+  ['/metas', 'Metas', Target],
+  ['/relatorios', 'Relatorios', BarChart3],
+  ['/categorias', 'Categorias', CalendarDays],
+  ['/configuracoes', 'Configuracoes', Settings]
+];
+
+export function Layout() {
+  const { user, logout } = useAuth();
+
+  return (
+    <div className="app-shell">
+      <aside className="sidebar">
+        <div className="brand">
+          <Gauge size={28} />
+          <div>
+            <strong>Gestao Financeira</strong>
+            <span>Inteligente</span>
+          </div>
+        </div>
+        <nav>
+          {nav.map(([to, label, Icon]) => (
+            <NavLink key={to} to={to} end={to === '/'} className={({ isActive }) => isActive ? 'active' : ''}>
+              <Icon size={18} />
+              {label}
+            </NavLink>
+          ))}
+        </nav>
+        <div className="sidebar-health">
+          <span>Saude Financeira</span>
+          <strong>62 / 100</strong>
+          <small>Regular</small>
+          <div className="mini-gauge"><i /></div>
+        </div>
+        <button className="logout" onClick={logout}><LogOut size={18} /> Sair</button>
+      </aside>
+      <main className="content">
+        <header className="topbar">
+          <button className="ghost-icon" aria-label="Abrir menu"><Menu size={21} /></button>
+          <div className="top-search">
+            <Search size={18} />
+            <input placeholder="Buscar no sistema..." />
+          </div>
+          <button className="ghost-icon alert-dot" aria-label="Alertas"><Bell size={19} /></button>
+          <button className="ghost-icon" aria-label="Mensagens"><Mail size={19} /></button>
+          <button className="ghost-icon" aria-label="Tema"><Moon size={19} /></button>
+          <div className="user-chip">
+            <div className="avatar">{user?.name?.slice(0, 1) || 'U'}</div>
+            <div>
+              <strong>Ola, {user?.name || 'Usuario'}!</strong>
+              <span>Plano Premium</span>
+            </div>
+            <ChevronDown size={16} />
+          </div>
+        </header>
+        <Outlet />
+      </main>
+    </div>
+  );
+}
